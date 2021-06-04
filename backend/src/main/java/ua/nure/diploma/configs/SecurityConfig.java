@@ -11,13 +11,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/login/**").permitAll()
-                .antMatchers("/request/**").hasAuthority("ROLE_REQUEST_MANAGER")
+                .antMatchers("/deliveryRequest/**").hasAuthority("ROLE_REQUEST_MANAGER")
                 .antMatchers("/routeSheet/**").hasAuthority("ROLE_LOGIST")
                 .and()
                 .formLogin()
                 .and()
                 .logout().logoutSuccessUrl("/login/**");
     }
-
-
 }
