@@ -24,4 +24,12 @@ class SecurityConfigsTest {
         mockMvc.perform(get("/deliveryRequest"))
                 .andExpect(status().is3xxRedirection());
     }
+
+    @Test
+    @DisplayName("When calling the /routeSheet endpoint without authorization we expect to get a 301 Redirection.")
+    void testUnauthorizedRouteSheetEndpoint() throws Exception{
+
+        mockMvc.perform(get("/routeSheet"))
+                .andExpect(status().is3xxRedirection());
+    }
 }
