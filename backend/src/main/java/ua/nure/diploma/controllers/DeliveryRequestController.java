@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/deliveryRequest")
 public class DeliveryRequestController {
 
-    @GetMapping("deliveryRequest/all")
-    public String getAllRequests(){
+    @GetMapping("/all")
+    public String getAllDeliveryRequests(){
         return "You are on a manager request page";
     }
 
