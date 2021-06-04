@@ -1,4 +1,4 @@
-package ua.nure.diploma.model;
+package ua.nure.diploma.models;
 
 import javax.persistence.*;
 
