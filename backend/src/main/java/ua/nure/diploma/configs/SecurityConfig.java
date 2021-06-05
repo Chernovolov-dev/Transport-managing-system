@@ -13,11 +13,10 @@ import ua.nure.diploma.services.UserService;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private UserService userService;
+    private final UserService userService;
 
-    @Autowired
-    public UserService getUserService() {
-        return userService;
+    public SecurityConfig(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
