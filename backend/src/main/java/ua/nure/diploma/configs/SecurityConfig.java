@@ -1,5 +1,6 @@
 package ua.nure.diploma.configs;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,9 +8,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ua.nure.diploma.services.UserService;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private UserService userService;
+
+    @Autowired
+    public UserService getUserService() {
+        return userService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -33,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         DaoAuthenticationProvider authenticationProvider=new DaoAuthenticationProvider();
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-//        authenticationProvider.setUserDetailsService();
+        authenticationProvider.setUserDetailsService(userService);
 
         return authenticationProvider;
     }
