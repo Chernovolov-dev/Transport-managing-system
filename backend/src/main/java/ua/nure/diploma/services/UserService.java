@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ua.nure.diploma.configs.SecurityConfig;
 import ua.nure.diploma.models.User;
 import ua.nure.diploma.repositories.UserRepository;
 
@@ -19,9 +20,11 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
+    private SecurityConfig securityConfig;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository,SecurityConfig securityConfig) {
+        this.securityConfig=securityConfig;
         this.userRepository = userRepository;
     }
 
@@ -31,6 +34,8 @@ public class UserService implements UserDetailsService {
         User user=userRepository.findByUserName(username);
 
         if(user==null) throw new UsernameNotFoundException(String.format("User '%s' not found",username));
+
+        user.setUserPassword(securityConfig.passwordEncoder().encode(user.getUserPassword()));
 
         return new org.springframework.security.core.userdetails.User(user.getUserName(),
                 user.getUserPassword(),getAuthorities(user));
