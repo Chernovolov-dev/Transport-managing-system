@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,5 +32,14 @@ class SecurityConfigsTest {
 
         mockMvc.perform(get("/routeSheet"))
                 .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @DisplayName("When calling the deliveryRequest/all endpoint with role of the logist")
+    @WithMockUser(roles = "LOGIST")
+    void testLogistDeliveryRequestAllEndpoint() throws Exception{
+
+        mockMvc.perform(get("/deliveryRequest/all"))
+                .andExpect(status().isForbidden());
     }
 }
