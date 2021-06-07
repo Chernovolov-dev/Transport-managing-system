@@ -27,7 +27,7 @@ class SecurityConfigsTest {
     }
 
     @Test
-    @DisplayName("When calling the /routeSheet endpoint without authorization we expect to get a 301 Redirection.")
+    @DisplayName("When calling the /routeSheet** endpoint without authorization we expect to get a 301 Redirection.")
     void testUnauthorizedRouteSheetEndpoint() throws Exception{
 
         mockMvc.perform(get("/routeSheet/**"))
@@ -35,9 +35,9 @@ class SecurityConfigsTest {
     }
 
     @Test
-    @DisplayName("When calling the deliveryRequest/all endpoint with role of the logist")
+    @DisplayName("When calling the deliveryRequest/** endpoint with role of the logist")
     @WithMockUser(roles = "LOGIST")
-    void testLogistDeliveryRequestAllEndpoint() throws Exception{
+    void testLogistDeliveryRequestEndpoint() throws Exception{
 
         mockMvc.perform(get("/deliveryRequest/**"))
                 .andExpect(status().isForbidden());
@@ -46,9 +46,27 @@ class SecurityConfigsTest {
     @Test
     @DisplayName("When calling the routeSheet/** endpoint with role of the request manager")
     @WithMockUser(roles = "REQUEST_MANAGER")
-    void testRequestManagerRouteSheetManageEndpoint() throws Exception{
+    void testRequestManagerRouteSheetEndpoint() throws Exception{
 
         mockMvc.perform(get("/routeSheet/**"))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("When calling the routeSheet/manage endpoint with role of the logist")
+    @WithMockUser(roles="LOGIST")
+    void testLogistRouteSheetManageEndpoint() throws Exception{
+
+        mockMvc.perform(get("/routeSheet/manage"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("When calling the deliveryRequest/all endpoint with role of the request manager")
+    @WithMockUser(roles="REQUEST_MANAGER")
+    void testRequestManagerdeliveryRequestAllEndpoint() throws Exception{
+
+        mockMvc.perform(get("/deliveryRequest/all"))
+                .andExpect(status().isOk());
     }
 }
