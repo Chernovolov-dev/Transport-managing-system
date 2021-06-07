@@ -22,7 +22,7 @@ class SecurityConfigsTest {
     @DisplayName("When calling the /deliveryRequest endpoint without authorization we expect to get a 301 Redirection.")
     void testUnauthorizedDeliveryRequestEndpoint() throws Exception{
 
-        mockMvc.perform(get("/deliveryRequest"))
+        mockMvc.perform(get("/deliveryRequest/**"))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -30,7 +30,7 @@ class SecurityConfigsTest {
     @DisplayName("When calling the /routeSheet endpoint without authorization we expect to get a 301 Redirection.")
     void testUnauthorizedRouteSheetEndpoint() throws Exception{
 
-        mockMvc.perform(get("/routeSheet"))
+        mockMvc.perform(get("/routeSheet/**"))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -39,7 +39,16 @@ class SecurityConfigsTest {
     @WithMockUser(roles = "LOGIST")
     void testLogistDeliveryRequestAllEndpoint() throws Exception{
 
-        mockMvc.perform(get("/deliveryRequest/all"))
+        mockMvc.perform(get("/deliveryRequest/**"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("When calling the routeSheet/** endpoint with role of the request manager")
+    @WithMockUser(roles = "REQUEST_MANAGER")
+    void testRequestManagerRouteSheetManageEndpoint() throws Exception{
+
+        mockMvc.perform(get("/routeSheet/**"))
                 .andExpect(status().isForbidden());
     }
 }
