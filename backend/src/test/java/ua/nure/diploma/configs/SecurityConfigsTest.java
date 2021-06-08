@@ -6,10 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import ua.nure.diploma.repositories.UserRepository;
+import ua.nure.diploma.models.User;
 import ua.nure.diploma.services.UserService;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -21,9 +25,6 @@ class SecurityConfigsTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
@@ -87,5 +88,26 @@ class SecurityConfigsTest {
         String actualName="Custom";
 
         Assert.assertThrows(UsernameNotFoundException.class, ()-> userService.loadUserByUsername(actualName));
+    }
+
+    @Test
+    @DisplayName("When trying to login with correct username, with role of logist, but wrong password")
+    void testLoginWithWrongPassword() throws Exception{
+
+        User user=new User();
+
+        //Data we want to enter
+        user.setUserName("Vladislav");
+        user.setUserPassword("Custom");
+
+        UserDetails userDetails=userService.loadUserByUsername(user.getUserName());
+
+        Authentication authentication=new UsernamePasswordAuthenticationToken(user.getUserName(),
+                "logist",userDetails.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Assert.assertNotEquals(SecurityContextHolder.getContext().getAuthentication().getCredentials(),
+                user.getUserPassword());
     }
 }
