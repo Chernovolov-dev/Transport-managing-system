@@ -110,4 +110,24 @@ class SecurityConfigsTest {
         Assert.assertNotEquals(SecurityContextHolder.getContext().getAuthentication().getCredentials(),
                 user.getUserPassword());
     }
+
+    @Test
+    @DisplayName("When trying to login with correct data")
+    void testLoginWithCorrectData(){
+
+        User user=new User();
+        user.setUserName("Dmitriy");
+        user.setUserPassword("manager");
+
+        UserDetails userDetails=userService.loadUserByUsername(user.getUserName());
+
+        Authentication authentication=new UsernamePasswordAuthenticationToken(user.getUserName(),
+                "manager",userDetails.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        Assert.assertEquals(SecurityContextHolder.getContext().getAuthentication().getCredentials(),
+                user.getUserPassword());
+
+    }
 }
