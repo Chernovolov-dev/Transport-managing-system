@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.nure.diploma.models.User;
 import ua.nure.diploma.services.UserService;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -128,6 +130,13 @@ class SecurityConfigsTest {
 
         Assert.assertEquals(SecurityContextHolder.getContext().getAuthentication().getCredentials(),
                 user.getUserPassword());
-
     }
+
+    @Test
+    @DisplayName("When trying to logout no matter from which endpoint")
+    void testLogout() throws Exception{
+
+        mockMvc.perform(logout());
+    }
+
 }
