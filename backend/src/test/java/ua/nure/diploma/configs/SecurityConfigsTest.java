@@ -8,6 +8,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,7 +18,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import ua.nure.diploma.models.User;
 import ua.nure.diploma.services.UserService;
 
+import java.util.Collection;
+import java.util.Collections;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.formLogin;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders.logout;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
@@ -138,4 +147,19 @@ class SecurityConfigsTest {
         mockMvc.perform(logout());
     }
 
+    @Test
+    @DisplayName("When we login as a user with a logist role we expect to be redirected to routeSheet/manage endpoint")
+    void testRedirectionAfterLoginAsALogist() throws Exception{
+
+        mockMvc.perform(formLogin().user("Vladislav").password("logist"))
+                .andExpect(redirectedUrl("/routeSheet/manage"));
+    }
+
+    @Test
+    @DisplayName("When we login as a user with a request manager role we expect to be redirected to deliveryRequest/all endpoint")
+    void testRedirectionAfterLoginAsARequestManager() throws Exception{
+
+        mockMvc.perform(formLogin().user("Dmitriy").password("manager"))
+                .andExpect(redirectedUrl("/deliveryRequest/all"));
+    }
 }
