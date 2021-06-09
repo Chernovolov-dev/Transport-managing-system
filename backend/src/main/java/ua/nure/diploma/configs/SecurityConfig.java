@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import ua.nure.diploma.handlers.CustomSuccessHandler;
 import ua.nure.diploma.services.UserService;
 
 @Configuration
@@ -36,9 +37,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/routeSheet/**").hasRole("LOGIST")
                 .anyRequest().authenticated()
                 .and()
-                .formLogin().defaultSuccessUrl("/deliveryRequest/all")
+                .formLogin()
+                .successHandler(customSuccessHandler())
                 .and()
                 .logout().logoutSuccessUrl("/login/**");
+    }
+
+    @Bean
+    public CustomSuccessHandler customSuccessHandler(){
+        return new CustomSuccessHandler();
     }
 
     @Bean
